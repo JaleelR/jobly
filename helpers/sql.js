@@ -2,9 +2,37 @@ const { BadRequestError } = require("../expressError");
 
 // THIS NEEDS SOME GREAT DOCUMENTATION.
 
+
+
+/*
+-partially updates sql with incoming data and js used to help us sql
+  both arguments are objects 
+
+- Gets keys from incoming data
+for each key create a string 
+where column is a key that matches each 
+dataToUpdate key with conguent one in jsToSqlkey
+wtih a incrementing parameterized query
+- if jsToSqlkey and dataToUpdate key don't match, put dataToUpdate
+key ascolumn
+
+This returns colums with parameterized queries after "SET" and values needed 
+to define parameterized queries 
+{ setCols, values }
+  - Where setCols is a string converted from cols array.
+    Each indecy in cols array has an equal sign and a
+    parameterized query attatched and seperated by a comma in new string.
+    example { setCols: ""first_name"=$1", "last_name"=$2"......}
+    
+  -Where values is an array of values from the incoming data object 
+  example { values: charles, lee, charles@lee.com......}
+
+
+*/
+
+
+
 function sqlForPartialUpdate(dataToUpdate, jsToSql) {
-  ////datatouodate is an object, json.body 
-  ////jsTosql is an object, the columns you are allowed to change for sql
  
 
  
