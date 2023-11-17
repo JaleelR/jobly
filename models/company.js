@@ -48,18 +48,57 @@ class Company {
    *
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
-
-  static async findAll() {
-    const companiesRes = await db.query(
-          `SELECT handle,
+  //if string is a string 
+  //if name contains string chars
+  //give me all names with those char
+  
+  static async findAll(string, min, max) {
+    let query = `SELECT handle,
                   name,
                   description,
                   num_employees AS "numEmployees",
                   logo_url AS "logoUrl"
-           FROM companies
-           ORDER BY name`);
-    return companiesRes.rows;
+           FROM companies`; 
+        
+    let array = [];
+    if (string) {
+      query += ` WHERE name ILIKE $1`;
+      array.push(`%${string}%`)
+      // if (companiesRes.rows.length === 0) {
+      //   throw new BadRequestError("No company associated with those letters!", 400)
+      // }
+    }
+
+    if (min > max) {
+      throw new BadRequestError("Too many Empoyees!", 400)
+    }
+     if (min) {
+        query += ` AND num_employees >= $2`;
+        array.push(min);
+      }
+      if (max) {
+        query += ` AND num_employees <= $3`;
+        array.push(max);
+    }
+   let companiesRes = await db.query(query, array );
+      return companiesRes.rows;
+    
   }
+  
+
+  //   } else {
+  //    const companiesRes = await db.query(
+  //       `SELECT handle,
+  //                 name,
+  //                 description,
+  //                 num_employees AS "numEmployees",
+  //                 logo_url AS "logoUrl"
+  //          FROM companies
+  //          ORDER BY name `, [query]);
+  //     return companiesRes.rows
+
+  //   }
+  // }
 
   /** Given a company handle, return data about company.
    *
