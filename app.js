@@ -7,7 +7,7 @@ const cors = require("cors");
 
 const { NotFoundError } = require("./expressError");
 
-const { authenticateJWT } = require("./middleware/auth");
+const { authenticateJWT, isAdmin } = require("./middleware/auth");
 const authRoutes = require("./routes/auth");
 const companiesRoutes = require("./routes/companies");
 const usersRoutes = require("./routes/users");
@@ -20,6 +20,21 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan("tiny"));
 app.use(authenticateJWT);
+
+app.use('/companies', (req, res, next) => {
+  if (req.method === "POST") {
+    isAdmin(req, res, next);
+  } else {
+    next();
+  }
+})
+app.use('/companies/:handle', (req, res, next) => {
+  if (req.method === "PATCH" || req.method === "DELETE") {
+    isAdmin(req, res, next);
+  } else {
+    next();
+  }
+})
 
 app.use("/auth", authRoutes);
 app.use("/companies", companiesRoutes);
