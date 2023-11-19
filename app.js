@@ -21,20 +21,32 @@ app.use(express.json());
 app.use(morgan("tiny"));
 app.use(authenticateJWT);
 
-app.use('/companies', (req, res, next) => {
+
+
+// app.use([ '/users'], (req, res, next) => {
+//   if (req.method === "GET") {
+//     isAdmin(req, res, next);
+//   } else {
+//     next();
+//   }
+// });
+
+
+app.use(['/companies', '/users'], (req, res, next) => {
   if (req.method === "POST") {
     isAdmin(req, res, next);
   } else {
     next();
   }
-})
+});
+
 app.use('/companies/:handle', (req, res, next) => {
   if (req.method === "PATCH" || req.method === "DELETE") {
     isAdmin(req, res, next);
   } else {
     next();
   }
-})
+});
 
 app.use("/auth", authRoutes);
 app.use("/companies", companiesRoutes);

@@ -287,7 +287,6 @@ describe("DELETE /companies/:handle", function () {
      }
   });
   
-
   test("not found for no such company", async function () {
     const resp = await request(app)
         .delete(`/companies/nope`)

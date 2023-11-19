@@ -52,7 +52,21 @@ function isAdmin(req, res, next) {
   } catch (err) {
     return next(err);
   }
-}
+};
+
+function adminOrUser(req, res, next) {
+  try {
+    if (!res.locals.user.isAdmin) {
+      console.log("not admin")
+      if (res.locals.user.username !== req.params.username) {
+        throw new UnauthorizedError("only user or admin allowed")
+      }
+    } return next();
+  } catch (err) {
+    return next(err);
+  }
+};
+
 
 
 
@@ -60,4 +74,5 @@ module.exports = {
   authenticateJWT,
   ensureLoggedIn,
   isAdmin
+, adminOrUser
 };
