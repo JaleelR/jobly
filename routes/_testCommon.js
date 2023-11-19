@@ -77,7 +77,7 @@ async function commonBeforeAll() {
   await Job.create(
     {
       title: "Software Engineer",
-      salary: 100000,
+      salary: 10000,
       equity: 0,
       company_handle: "c1"
     });
@@ -93,7 +93,13 @@ async function commonBeforeAll() {
     equity: 0,
     company_handle: "c3"
   });
-
+  await Job.create({
+    title: "j1",
+    salary: 500,
+    equity: 0,
+    company_handle: "c3"
+  });
+}
   async function commonBeforeEach() {
     await db.query("BEGIN");
   }
@@ -105,7 +111,7 @@ async function commonBeforeAll() {
   async function commonAfterAll() {
     await db.end();
   }
-}
+
 
 const u1Token = createToken({ username: "u1", isAdmin: false });
 const u1Token2 = createToken({ username: "u4", isAdmin: true });

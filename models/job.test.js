@@ -91,7 +91,7 @@ describe("findAll", function () {
     })
 
     test("works: with filter, string and min and max", async () => {
-        let jobs = await Job.findAll("J", 10005, 300000);
+        let jobs = await Job.findAll("J", 10005);
 
         expect(jobs).toEqual([
             {
@@ -110,14 +110,13 @@ describe("findAll", function () {
         ])
     })
     test(" Min too big of number, fail", async () => {
-        try {
-            await Job.findAll("c", 4, 2);
-            fail();
-        } catch (e) {
-            expect(e instanceof BadRequestError).toBeTruthy();
-        }
+      
+        const job = await Job.findAll("c", 4, false);
+            
+        expect(job).toEqual([]);
     })
 });
+
 
 
 

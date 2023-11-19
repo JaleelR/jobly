@@ -45,7 +45,7 @@ class Job {
      * */
 
 
-    static async findAll(string, min, max) {
+    static async findAll(string, min, hasEquity) {
         let query = `SELECT title,
                   salary,
                   equity,
@@ -56,16 +56,16 @@ class Job {
             query += ` WHERE title ILIKE $1`;
             array.push(`%${string}%`)
         };
-        if (min > max) throw new BadRequestError(`No job with the amount of ${min}`, 400);
 
         if (min) {
             query += ` AND salary >= $2`;
             array.push(min);
         };
-        if (max) {
-            query += ` AND salary <= $3`;
-            array.push(max);
-        };
+        if (hasEquity === true) {
+            query += ` AND equity > 0`;
+        } else if (hasEquity === false) {
+            query += ` AND equity = 0`;
+        }
         let jobRes = await db.query(query, array);
         return jobRes.rows;
     };
@@ -109,7 +109,7 @@ class Job {
         const { setCols, values } = sqlForPartialUpdate(
             data,
             {
-              
+
             });
         const handleVarIdx = "$" + (values.length + 1);
 
@@ -123,7 +123,7 @@ class Job {
         const result = await db.query(querySql, [...values, title]);
         const job = result.rows[0];
 
-        if (!job) throw new NotFoundError(`No job title: ${title}`);
+        if (!job) throw new NotFoundError(`No job title: ${title}`, 404);
 
         return job;
     }

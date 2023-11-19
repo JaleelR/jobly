@@ -11,6 +11,7 @@ const { authenticateJWT, isAdmin } = require("./middleware/auth");
 const authRoutes = require("./routes/auth");
 const companiesRoutes = require("./routes/companies");
 const usersRoutes = require("./routes/users");
+const jobsRoutes = require("./routes/jobs");
 
 const morgan = require("morgan");
 
@@ -32,7 +33,7 @@ app.use(authenticateJWT);
 // });
 
 
-app.use(['/companies', '/users'], (req, res, next) => {
+app.use(['/companies', '/jobs', '/users'], (req, res, next) => {
   if (req.method === "POST") {
     isAdmin(req, res, next);
   } else {
@@ -40,7 +41,7 @@ app.use(['/companies', '/users'], (req, res, next) => {
   }
 });
 
-app.use('/companies/:handle', (req, res, next) => {
+app.use(['/companies/:handle', 'jobs/:title'], (req, res, next) => {
   if (req.method === "PATCH" || req.method === "DELETE") {
     isAdmin(req, res, next);
   } else {
@@ -51,6 +52,7 @@ app.use('/companies/:handle', (req, res, next) => {
 app.use("/auth", authRoutes);
 app.use("/companies", companiesRoutes);
 app.use("/users", usersRoutes);
+app.use("/jobs", jobsRoutes);
 
 
 /** Handle 404 errors -- this matches everything */
