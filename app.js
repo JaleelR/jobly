@@ -33,7 +33,7 @@ app.use(authenticateJWT);
 // });
 
 
-app.use(['/companies', '/jobs', '/users'], (req, res, next) => {
+app.use(['/companies', '/jobs'], (req, res, next) => {
   if (req.method === "POST") {
     isAdmin(req, res, next);
   } else {

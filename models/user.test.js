@@ -7,12 +7,15 @@ const {
 } = require("../expressError");
 const db = require("../db.js");
 const User = require("./user.js");
+
+
 const {
   commonBeforeAll,
   commonBeforeEach,
   commonAfterEach,
   commonAfterAll,
 } = require("./_testCommon");
+
 
 beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);
@@ -215,7 +218,7 @@ describe("remove", function () {
   test("works", async function () {
     await User.remove("u1");
     const res = await db.query(
-        "SELECT * FROM users WHERE username='u1'");
+      "SELECT * FROM users WHERE username='u1'");
     expect(res.rows.length).toEqual(0);
   });
 
@@ -227,4 +230,32 @@ describe("remove", function () {
       expect(err instanceof NotFoundError).toBeTruthy();
     }
   });
+})
+/************************************** apply*/
+describe("apply", function () {
+  let jobid;
+
+  beforeAll(async () => {
+    const job = await db.query(`INSERT INTO jobs(title, salary, equity, company_handle)
+      VALUES('Job1', 10000, 0, 'c3') RETURNING id`);
+    
+    jobid = job.rows[0].id;
+    
+  });
+
+  afterAll(async () => {
+    await db.query(`DELETE FROM jobs WHERE id = $1`, [jobid]);
+    await db.end();
+  });
+
+  test("works", async function () {
+    
+  
+    const res = await User.apply("u1", jobid);
+    expect(res).toEqual({
+      applied: jobid,
+    });
+  });
 });
+
+

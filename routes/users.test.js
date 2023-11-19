@@ -365,4 +365,34 @@ describe("DELETE /users/:username", function () {
         .set("authorization", `Bearer ${u1Token2}`);
     expect(resp.statusCode).toEqual(404);
   });
+
+
 });
+
+/************************************** App /users/:username */
+
+describe("apply /users/:username/job/:jobid", function () {
+
+  let jobid;
+
+  beforeAll(async () => {
+    const job = await db.query(`INSERT INTO jobs(title, salary, equity, company_handle)
+      VALUES('Job1', 10000, 0, 'c3') RETURNING id`);
+    console.log("$$$$$$$$$$$$$$$$$$$$$$$$", job.rows[0]);
+    jobid = job.rows[0].id;
+  });
+  afterAll(async () => {
+    await db.query(`DELETE FROM jobs WHERE id = $1`, [jobid]);
+    await db.end();
+  });
+  test("app works", async function () {
+    console.log("$$$$$$$$$$$$$$$$$$$$$$$$", jobid);
+    const resp = await request(app)
+      .post(`/users/u1/jobs/${jobid}`)
+      .set("authorization", `Bearer ${u1Token2}`);
+    console.log("##########", resp)
+    expect(resp.statusCode).toEqual(200);
+  });
+})
+
+

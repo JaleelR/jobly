@@ -11,6 +11,7 @@ const User = require("../models/user");
 const { createToken } = require("../helpers/tokens");
 const userNewSchema = require("../schemas/userNew.json");
 const userUpdateSchema = require("../schemas/userUpdate.json");
+const appSchema = require("../schemas/applySchema.json");
 
 const router = express.Router();
 
@@ -43,6 +44,21 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
   }
 });
 
+/** POST / => { Applied: job Id} }
+ *
+ * Returns job id with apply key.
+ *
+ * Authorization required: admin or user
+ **/
+router.post("/:username/jobs/:id", adminOrUser ,async function (req, res, next) {
+  try {
+    const { username, id } = req.params;
+    const application = await User.apply(username, +id);
+    return res.json({application})
+  } catch (err) {
+  return next(err);
+}
+})
 
 /** GET / => { users: [ {username, firstName, lastName, email }, ... ] }
  *
@@ -120,6 +136,8 @@ router.delete("/:username", adminOrUser, async function (req, res, next) {
     return next(err);
   }
 });
+
+
 
 
 module.exports = router;
