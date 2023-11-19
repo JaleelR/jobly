@@ -232,7 +232,7 @@ describe("PATCH /companies/:handle", function () {
         const resp = await request(app)
             .patch('/jobs/j1')
             .send({
-                salary:100000.12233444,
+                salary: 100000.12233444,
             })
             .set("authorization", `Bearer ${u1Token2}`);
         expect(resp.statusCode).toEqual(400);

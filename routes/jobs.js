@@ -29,7 +29,7 @@ const router = new express.Router();
 
 router.post("/", ensureLoggedIn, async function (req, res, next) {
     try {
-   
+
         const job = await Job.create(req.body);
         return res.status(201).json({ job });
     } catch (err) {
